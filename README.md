@@ -1,2 +1,2 @@
-# node-ioc-container
-Small IOC container for node projects
+# node-log
+Small policy-based logging for node projects
