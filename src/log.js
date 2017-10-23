@@ -7,10 +7,10 @@ export default class Log {
     return new LogActivity(this.bus).with(extension);
   }
   note(subject) {
-    return new LogActivity(this.bus).note(subject, this.note.caller);
+    return new LogActivity(this.bus).note(subject);
   }
-  enter(section) {
-    return new LogActivity(this.bus).enter(section, this.enter.caller);
+  enter(name, section) {
+    return new LogActivity(this.bus).enter(name, section);
   }
   subscribe(subscription) {
     return this.bus.subscribe(subscription);
@@ -20,24 +20,16 @@ export default class Log {
 class LogActivity {
   extensions = {}
   entries = []
-  active = true
 
   constructor(publisher) {
     this.publisher = publisher;
   }
 
-  publish(entry) {
-    var publishEntry = {
-      ...entry.copy(),
-      ...this.extensions
-    };
-    this.entries.push(publishEntry);
-    this.publisher.publish(publishEntry);
-    return entry;
-  }
-
   exit(error) {
-    this.active = false;
+    if (this.complete) {
+      throw new Error('Exiting an unentered activity');
+    }
+    this.complete = true;
     const start = this.entries[0];
     const entry = new LogEntry(error || 'exiting activity', start.method);
     entry.entries = this.entries;
@@ -48,11 +40,11 @@ class LogActivity {
     this.publish(entry);
   }
 
-  note(subject, caller) {
-    if (!this.active) {
+  note(subject) {
+    if (this.complete) {
       throw new Error('Note called on a completed activity');
     }
-    const note = new LogEntry(subject, caller); // TODO (brett) - get these arguments: || this.note.caller);
+    const note = new LogEntry(subject);
     return this.publish({
       ...note,
       ...this.extensions
@@ -69,8 +61,9 @@ class LogActivity {
     return this;
   }
 
-  enter(section, caller) {
-    var entry = new LogEntry('entering activity', caller || arguments.caller);
+  enter(name = '', section) {
+    this.name = name;
+    const entry = new LogEntry(`entering activity ${this.name}`.trim());
     entry.entering = true;
     this.publish(entry);
 
@@ -89,16 +82,23 @@ class LogActivity {
     }
     return null;
   }
+
+  publish(entry) {
+    let publishEntry = {
+      ...entry.copy(),
+      ...this.extensions
+    };
+    this.entries.push(publishEntry);
+    this.publisher.publish(publishEntry);
+    return entry;
+  }
 }
 
 
 class LogEntry {
-  constructor(subject, caller = { name: 'anonymous' }) {
-    this.method = caller.name;
+  constructor(subject) {
     this.time = new Date();
-
     this.addNote(subject);
-    this.addArguments(caller);
   }
 
   addNote = note => {
@@ -116,26 +116,12 @@ class LogEntry {
     }
   }
 
-  addArguments = caller => {
-    try {
-      if (caller.arguments) {
-        // TODO (brett) - Why all the ceremony?
-        const args = Array.prototype.slice.call(caller.arguments);
-        JSON.stringify(args); // assure arguments are not cyclic
-        this.arguments = args;
-      }
-    }
-    catch (e) {
-      this.arguments = 'Cyclic arguments';
-    }
-  }
-
   stack = () => {
     return stack({ e: this.error });
   }
 
   copy = () => ({
-    ...new LogEntry(null, this.method),
+    ...new LogEntry(null),
     ...this,
     clone: true
   })
