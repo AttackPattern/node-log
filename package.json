@@ -1,6 +1,6 @@
 {
   "name": "@facetdev/node-ioc-log",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Library with a simple subscription-based logger for node projects",
   "main": "index.js",
   "scripts": {

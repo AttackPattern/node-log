@@ -124,8 +124,7 @@ class LogEntry {
 
   copy = () => ({
     ...new LogEntry(null),
-    ...this,
-    clone: true
+    ...this
   })
   appStart = () => appStart
   appElapsed = () => this.time - appStart
