@@ -1,3 +1,5 @@
+import stack from 'clean-stack';
+
 const appStart = new Date();
 
 export default class Log {
@@ -117,7 +119,7 @@ class LogEntry {
   }
 
   stack = () => {
-    return stack({ e: this.error });
+    return stack(this.error?.stack);
   }
 
   copy = () => ({

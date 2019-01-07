@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import uuidV4 from 'uuid/v4';
 chai.use(chaiAsPromised);
+import uuidV4 from 'uuid/v4';
 
 import Log from '../src/log';
 
