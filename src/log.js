@@ -96,7 +96,6 @@ class LogActivity {
   }
 }
 
-
 class LogEntry {
   constructor(subject) {
     this.time = new Date();

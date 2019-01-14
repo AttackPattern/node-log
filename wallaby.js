@@ -5,16 +5,18 @@ module.exports = wallaby => {
     ],
 
     tests: [
-      'test/**/*.js'
+      'tests/**/*.js'
     ],
     env: {
       type: 'node'
     },
     compilers: {
-      '**/*.js': wallaby.compilers.babel()
+      '**/*.js': wallaby.compilers.babel({ babelrc: true })
     },
-    bootstrap: () => {
-      require('babel-polyfill');
+    setup: wallaby => {
+      const chai = require('chai');
+      chai.use(require('chai-as-promised'));
+      chai.use(require('chai-datetime'));
     }
   };
 };

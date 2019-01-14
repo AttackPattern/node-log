@@ -1,6 +1,6 @@
 {
   "name": "@facetdev/node-log",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Library with a simple subscription-based logger for node projects",
   "main": "index.js",
   "scripts": {
@@ -38,6 +38,7 @@
     "babel-eslint": "10.0.1",
     "chai": "~4.2.0",
     "chai-as-promised": "^7.1.1",
+    "chai-datetime": "1.5.0",
     "del": "~3.0.0",
     "eslint": "~5.12.0",
     "gulp": "~4.0.0",
@@ -60,8 +61,9 @@
     "jshint-stylish": "~2.2.1",
     "mocha": "~5.2.0",
     "node-mocks-http": "~1.7.3",
-    "proxyquire": "~2.1.0",
-    "sinon": "~7.2.2",
+    "proxyquire": "2.1.0",
+    "sinon": "7.2.2",
+    "sinon-chai": "",
     "supertest": "~3.3.0",
     "uuid": "3.3.2"
   }
